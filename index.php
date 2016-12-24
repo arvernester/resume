@@ -41,7 +41,8 @@ $container['view'] = function($container) {
 $app->get('/', function(Request $request, Response $response) use($container) {
     return $this->view->render($response, 'index.html', [
         'name' => $container->get('app')['name'],
-        'email' => $container->get('app')['email']
+        'email' => $container->get('app')['email'],
+        'version' => $container->get('settings')['httpVersion']
     ]);
 })->setName('index');
 
