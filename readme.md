@@ -1,4 +1,4 @@
-<a href="http://demo.evenfly.com/view?theme=CVstrap"><img src="http://i0.wp.com/shapebootstrap.net/wp-content/uploads/2015/03/cvstrap-shapebootstrap-cover.jpg?resize=850%2C660" alt="CVstrap - Free Minimal CV HTML5/Bootstrap Template by EvenFly"></a>
+[![screencapture-resume-yugo-my-id-1485833339553.png](https://s29.postimg.org/qm79nmcyf/screencapture_resume_yugo_my_id_1485833339553.png)](https://postimg.org/image/se08iiwb7/)
 
 CVstrap - Free Minimal CV HTML5/Bootstrap Template by EvenFly
 ------------------------------------
