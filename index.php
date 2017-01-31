@@ -3,6 +3,8 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+use GuzzleHttp\Client;
+
 require 'vendor/autoload.php';
 
 $config = [
@@ -14,12 +16,17 @@ $config = [
     ],
     'mashape' => [
         'quote' => [
+            'base_uri' => 'https://andruxnet-random-famous-quotes.p.mashape.com/',
             'key' => ''
         ]
-    ]
+    ],
+    'settings' => [
+        'displayErrorDetails' => true,
+    ],
 ];
 
-$app = new \Slim\App($config);
+$setContainer = new \Slim\Container($config);
+$app = new \Slim\App($setContainer);
 
 // get container
 $container = $app->getContainer();
@@ -39,23 +46,31 @@ $container['view'] = function($container) {
 };
 
 $app->get('/', function(Request $request, Response $response) use($container) {
+    // $app->config('debug', true);
+
+    $client = new Client;
+
+    $quote = $client->request('GET', $container->get('mashape')['quote']['base_uri'], [
+        'query' => [
+            'cat' => 'movies'
+        ],
+        'headers' => [
+            'X-Mashape-Key' => $container->get('mashape')['quote']['key']
+        ],
+    ]);
+
+    if ($quote->getStatusCode() == 200) {
+        $randomQuote = json_decode($quote->getBody()->getContents());
+    }
+
+    // return view
     return $this->view->render($response, 'index.html', [
         'name' => $container->get('app')['name'],
         'author' => $container->get('app')['author'],
         'email' => $container->get('app')['email'],
-        'version' => $container->get('settings')['httpVersion']
+        'version' => $container->get('settings')['httpVersion'],
+        'quote' => isset($randomQuote) ? $randomQuote : null
     ]);
 })->setName('index');
-
-$app->get('/quote', function(Request $request, Response $response){
-    $quote = [
-        'quote' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'author' => 'Anonymous'
-    ];
-
-    $jsonResponse = $response->withJson($quote);
-
-    return $jsonResponse;
-})->setName('quote');
 
 $app->run();
